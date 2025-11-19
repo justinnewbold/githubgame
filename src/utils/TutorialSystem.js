@@ -230,11 +230,10 @@ export default class TutorialSystem {
         const width = this.scene.cameras.main.width;
         const height = this.scene.cameras.main.height;
 
-        // Semi-transparent overlay
+        // Semi-transparent overlay (not interactive, just visual)
         const overlay = this.scene.add.rectangle(0, 0, width, height, 0x000000, 0.7);
         overlay.setOrigin(0);
         overlay.setDepth(1000);
-        overlay.setInteractive();
 
         // Tutorial box
         const boxWidth = 600;
@@ -276,7 +275,7 @@ export default class TutorialSystem {
 
         // Next button or auto-advance
         if (stepIndex < this.steps.length - 1) {
-            const nextBtn = this.scene.add.text(width / 2 + 200, height / 2 + 75,
+            const nextBtn = this.scene.add.text(width / 2 + 150, height / 2 + 75,
                 '[ NEXT → ]', {
                 fontSize: '14px',
                 fontFamily: 'monospace',
@@ -322,7 +321,7 @@ export default class TutorialSystem {
         }
 
         // Skip button
-        const skipBtn = this.scene.add.text(width / 2 - 200, height / 2 + 75,
+        const skipBtn = this.scene.add.text(width / 2 - 150, height / 2 + 75,
             '[ SKIP ]', {
             fontSize: '12px',
             fontFamily: 'monospace',
