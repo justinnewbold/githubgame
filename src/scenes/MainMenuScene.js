@@ -78,6 +78,29 @@ export default class MainMenuScene extends Phaser.Scene {
             'DevCommanderScene',
             0x7e4ae2);
 
+        // Settings button
+        const settingsBtn = this.add.text(width - 20, 20, '⚙️ Settings', {
+            fontSize: '14px',
+            fontFamily: 'monospace',
+            color: '#ffffff',
+            backgroundColor: '#333333',
+            padding: { x: 10, y: 5 }
+        });
+        settingsBtn.setOrigin(1, 0);
+        settingsBtn.setInteractive({ useHandCursor: true });
+
+        settingsBtn.on('pointerdown', () => {
+            this.scene.start('SettingsScene');
+        });
+
+        settingsBtn.on('pointerover', () => {
+            settingsBtn.setStyle({ backgroundColor: '#555555' });
+        });
+
+        settingsBtn.on('pointerout', () => {
+            settingsBtn.setStyle({ backgroundColor: '#333333' });
+        });
+
         // Footer
         const footer = this.add.text(width / 2, height - 20,
             'Made with ❤️ and lots of git conflicts', {

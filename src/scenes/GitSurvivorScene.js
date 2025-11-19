@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import SoundManager from '../utils/SoundManager.js';
 import ParticleEffects from '../utils/ParticleEffects.js';
 import PowerUpManager from '../utils/PowerUps.js';
+import ComboSystem from '../utils/ComboSystem.js';
+import TutorialSystem from '../utils/TutorialSystem.js';
 import { gameData } from '../utils/GameData.js';
 
 export default class GitSurvivorScene extends Phaser.Scene {
@@ -35,6 +37,8 @@ export default class GitSurvivorScene extends Phaser.Scene {
         this.sounds = new SoundManager(this);
         this.particles = new ParticleEffects(this);
         this.powerUpManager = new PowerUpManager(this);
+        this.comboSystem = new ComboSystem(this);
+        this.tutorial = new TutorialSystem(this);
 
         // Background
         this.add.rectangle(0, 0, width, height, 0x0a0a1a).setOrigin(0);
@@ -104,8 +108,17 @@ export default class GitSurvivorScene extends Phaser.Scene {
         // Boss spawn every 30 enemies
         this.nextBossAt = 30;
 
-        // Show instructions
-        this.showInstructions();
+        // Help button to show tutorial
+        this.createHelpButton();
+
+        // Show tutorial for first-time players
+        if (!gameData.data.settings.tutorialSeenGitSurvivor) {
+            this.time.delayedCall(1000, () => {
+                this.tutorial.start('GitSurvivorScene');
+                gameData.data.settings.tutorialSeenGitSurvivor = true;
+                gameData.save();
+            });
+        }
 
         // Humor messages
         this.humorMessages = [
@@ -414,12 +427,22 @@ export default class GitSurvivorScene extends Phaser.Scene {
     enemyKilled(enemy, isBoss) {
         const data = enemy.enemyData;
 
-        this.score += data.reward;
+        // Add to combo
+        this.comboSystem.addHit();
+
+        // Calculate score with combo multiplier
+        const multipliedScore = this.comboSystem.calculateScore(data.reward);
+        this.score += multipliedScore;
         this.enemiesKilled++;
 
         // Particle effect
         this.particles.explosion(enemy.x, enemy.y, isBoss ? 0xff0000 : 0xff00ff, isBoss ? 40 : 20);
-        this.particles.floatingText(enemy.x, enemy.y, `+${data.reward}`, '#00ff00');
+
+        // Show score with multiplier
+        const scoreText = this.comboSystem.getMultiplier() > 1
+            ? `+${multipliedScore} (x${this.comboSystem.getMultiplier()})`
+            : `+${multipliedScore}`;
+        this.particles.floatingText(enemy.x, enemy.y, scoreText, '#00ff00');
 
         // Sound
         this.sounds.playSound(isBoss ? 'victory' : 'hit');
@@ -706,5 +729,23 @@ export default class GitSurvivorScene extends Phaser.Scene {
         });
         backBtn.on('pointerover', () => backBtn.setStyle({ backgroundColor: '#555555' }));
         backBtn.on('pointerout', () => backBtn.setStyle({ backgroundColor: '#333333' }));
+    }
+
+    createHelpButton() {
+        const width = this.cameras.main.width;
+        const helpBtn = this.add.text(width - 20, 20, '❓ Help', {
+            fontSize: '14px',
+            fontFamily: 'monospace',
+            color: '#ffffff',
+            backgroundColor: '#333333',
+            padding: { x: 10, y: 5 }
+        });
+        helpBtn.setOrigin(1, 0);
+        helpBtn.setInteractive({ useHandCursor: true });
+        helpBtn.on('pointerdown', () => {
+            this.tutorial.start('GitSurvivorScene');
+        });
+        helpBtn.on('pointerover', () => helpBtn.setStyle({ backgroundColor: '#555555' }));
+        helpBtn.on('pointerout', () => helpBtn.setStyle({ backgroundColor: '#333333' }));
     }
 }

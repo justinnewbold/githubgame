@@ -5,6 +5,8 @@ import GitSurvivorScene from './scenes/GitSurvivorScene.js';
 import CodeDefenseScene from './scenes/CodeDefenseScene.js';
 import PRRushScene from './scenes/PRRushScene.js';
 import DevCommanderScene from './scenes/DevCommanderScene.js';
+import SettingsScene from './scenes/SettingsScene.js';
+import StatsScene from './scenes/StatsScene.js';
 
 // Game configuration
 const config = {
@@ -27,6 +29,8 @@ const config = {
     scene: [
         BootScene,
         MainMenuScene,
+        SettingsScene,
+        StatsScene,
         GitSurvivorScene,
         CodeDefenseScene,
         PRRushScene,
