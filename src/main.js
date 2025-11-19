@@ -1,0 +1,41 @@
+import Phaser from 'phaser';
+import BootScene from './scenes/BootScene.js';
+import MainMenuScene from './scenes/MainMenuScene.js';
+import GitSurvivorScene from './scenes/GitSurvivorScene.js';
+import CodeDefenseScene from './scenes/CodeDefenseScene.js';
+import PRRushScene from './scenes/PRRushScene.js';
+import DevCommanderScene from './scenes/DevCommanderScene.js';
+
+// Game configuration
+const config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    parent: 'game-container',
+    backgroundColor: '#1a1a2e',
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 0 },
+            debug: false
+        }
+    },
+    scene: [
+        BootScene,
+        MainMenuScene,
+        GitSurvivorScene,
+        CodeDefenseScene,
+        PRRushScene,
+        DevCommanderScene
+    ]
+};
+
+// Create the game instance
+const game = new Phaser.Game(config);
+
+// Expose game globally for debugging (optional)
+window.game = game;
