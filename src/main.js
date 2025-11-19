@@ -7,6 +7,10 @@ import PRRushScene from './scenes/PRRushScene.js';
 import DevCommanderScene from './scenes/DevCommanderScene.js';
 import DebugDungeonScene from './scenes/DebugDungeonScene.js';
 import RefactorRaceScene from './scenes/RefactorRaceScene.js';
+import SprintSurvivorScene from './scenes/SprintSurvivorScene.js';
+import BugBountyScene from './scenes/BugBountyScene.js';
+import LegacyExcavatorScene from './scenes/LegacyExcavatorScene.js';
+import BossRushScene from './scenes/BossRushScene.js';
 import SettingsScene from './scenes/SettingsScene.js';
 import StatsScene from './scenes/StatsScene.js';
 
@@ -38,7 +42,11 @@ const config = {
         PRRushScene,
         DevCommanderScene,
         DebugDungeonScene,
-        RefactorRaceScene
+        RefactorRaceScene,
+        SprintSurvivorScene,
+        BugBountyScene,
+        LegacyExcavatorScene,
+        BossRushScene
     ]
 };
 

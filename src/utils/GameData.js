@@ -28,7 +28,11 @@ export default class GameData {
                 prRush: { bestAccuracy: 0, gamesPlayed: 0, prsReviewed: 0 },
                 devCommander: { maxSprints: 0, gamesPlayed: 0, tasksCompleted: 0 },
                 debugDungeon: { highScore: 0, gamesPlayed: 0, bugsFixed: 0 },
-                refactorRace: { highScore: 0, gamesPlayed: 0, totalRefactors: 0 }
+                refactorRace: { highScore: 0, gamesPlayed: 0, totalRefactors: 0 },
+                sprintSurvivor: { highScore: 0, gamesPlayed: 0, maxDistance: 0 },
+                bugBounty: { levelsCompleted: 0, totalStars: 0 },
+                legacyExcavator: { highScore: 0, gamesPlayed: 0, maxDepth: 0, artifactsFound: 0 },
+                bossRush: { highScore: 0, gamesPlayed: 0, bossesDefeated: 0 }
             },
             achievements: [],
             unlockedContent: {

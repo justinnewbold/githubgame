@@ -90,6 +90,30 @@ export default class MainMenuScene extends Phaser.Scene {
             'RefactorRaceScene',
             0x16a085);
 
+        this.createGameModeButton(width / 2, buttonY + buttonSpacing * 6,
+            '🏃 Sprint Survivor',
+            'Endless Runner: Dodge to survive!',
+            'SprintSurvivorScene',
+            0x3498db);
+
+        this.createGameModeButton(width / 2, buttonY + buttonSpacing * 7,
+            '🐛 Bug Bounty',
+            'Puzzle: Fix bugs with limited moves!',
+            'BugBountyScene',
+            0xe74c3c);
+
+        this.createGameModeButton(width / 2, buttonY + buttonSpacing * 8,
+            '⛏️ Legacy Excavator',
+            'Mining: Dig for code artifacts!',
+            'LegacyExcavatorScene',
+            0xf39c12);
+
+        this.createGameModeButton(width / 2, buttonY + buttonSpacing * 9,
+            '👹 Boss Rush',
+            'Challenge: Fight all bosses!',
+            'BossRushScene',
+            0xc0392b);
+
         // Settings button
         const settingsBtn = this.add.text(width - 20, 20, '⚙️ Settings', {
             fontSize: '14px',
