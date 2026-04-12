@@ -101,6 +101,20 @@ describe('ChallengeSystem', () => {
             const challenges = challengeSystem.getDailyChallenges();
             const challenge = challenges[0];
 
+            challenge.completed = false;
+            challenge.progress = 0;
+
+            const reward = challengeSystem.claimReward(challenge.id, false);
+            assert.strictEqual(reward, null);
+        });
+
+
+        it('should require progress target before claiming reward', () => {
+            const challenge = challengeSystem.getDailyChallenges()[0];
+            challenge.completed = true;
+            challenge.progress = 0;
+            challenge.target = 5;
+
             const reward = challengeSystem.claimReward(challenge.id, false);
             assert.strictEqual(reward, null);
         });

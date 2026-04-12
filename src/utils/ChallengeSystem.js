@@ -410,7 +410,11 @@ export default class ChallengeSystem {
         if (!challengeSet) return null;
 
         const challenge = challengeSet.challenges.find(c => c.id === challengeId);
-        if (!challenge || !challenge.completed || challenge.claimedReward) {
+        const hasReachedTarget = typeof challenge?.target === 'number'
+            ? challenge.progress >= challenge.target
+            : challenge?.completed;
+
+        if (!challenge || !challenge.completed || challenge.claimedReward || !hasReachedTarget) {
             return null;
         }
 

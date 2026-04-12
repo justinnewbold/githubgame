@@ -113,6 +113,14 @@ describe('GameData', () => {
             assert.ok(gameData.hasAchievement('first_blood'));
         });
 
+        it('should track the last unlocked achievement', () => {
+            gameData.unlockAchievement('first_blood');
+            const latest = gameData.getLastUnlockedAchievement();
+            assert.ok(latest);
+            assert.strictEqual(latest.id, 'first_blood');
+            assert.ok(latest.unlockedAt);
+        });
+
         it('should not unlock same achievement twice', () => {
             gameData.unlockAchievement('first_blood');
             const second = gameData.unlockAchievement('first_blood');
