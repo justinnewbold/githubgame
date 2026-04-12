@@ -272,7 +272,9 @@ export default class GameData {
             if (!this.data.achievements.unlocked) {
                 this.data.achievements.unlocked = {};
             }
-            this.data.achievements.unlocked[id] = { unlockedAt: Date.now() };
+            const unlockedAt = Date.now();
+            this.data.achievements.unlocked[id] = { unlockedAt };
+            this.data.achievements.lastUnlocked = id;
             this.save();
             const achievement = this.getAchievements().find(a => a.id === id);
             if (achievement) {
@@ -285,6 +287,23 @@ export default class GameData {
 
     hasAchievement(id) {
         return !!(this.data.achievements.unlocked && this.data.achievements.unlocked[id]);
+    }
+
+    getLastUnlockedAchievement() {
+        const lastUnlockedId = this.data.achievements.lastUnlocked;
+        if (!lastUnlockedId) {
+            return null;
+        }
+
+        const achievement = this.getAchievements().find(({ id }) => id === lastUnlockedId);
+        if (!achievement) {
+            return null;
+        }
+
+        return {
+            ...achievement,
+            unlockedAt: this.data.achievements.unlocked?.[lastUnlockedId]?.unlockedAt || null
+        };
     }
 
     /**

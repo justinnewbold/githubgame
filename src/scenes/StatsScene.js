@@ -6,6 +6,15 @@ import { logger } from '../utils/Logger.js';
 export default class StatsScene extends Phaser.Scene {
     constructor() {
         super({ key: 'StatsScene' });
+        this.currentTab = 'stats';
+        this.selectedGameMode = 'gitSurvivor';
+        this.returnScene = 'SettingsScene';
+    }
+
+    init(data = {}) {
+        this.currentTab = data.tab || this.currentTab || 'stats';
+        this.selectedGameMode = data.mode || this.selectedGameMode || 'gitSurvivor';
+        this.returnScene = data.returnScene || this.returnScene || 'SettingsScene';
     }
 
     create() {
@@ -27,7 +36,6 @@ export default class StatsScene extends Phaser.Scene {
         this.createBackButton();
 
         // Tab system
-        this.currentTab = 'stats';
         this.createTabs();
 
         // Content area
@@ -59,8 +67,7 @@ export default class StatsScene extends Phaser.Scene {
             }).setOrigin(0.5);
 
             tabBtn.on('pointerdown', () => {
-                this.currentTab = tab.id;
-                this.scene.restart();
+                this.scene.restart({ tab: tab.id, mode: this.selectedGameMode, returnScene: this.returnScene });
             });
 
             if (!isActive) {
@@ -149,7 +156,7 @@ export default class StatsScene extends Phaser.Scene {
 
     showAchievements() {
         const allAchievements = gameData.getAchievements();
-        const unlockedIds = gameData.data.achievements;
+        const unlockedIds = Object.keys(gameData.data.achievements.unlocked || {});
 
         let y = this.contentY;
 
@@ -305,11 +312,6 @@ export default class StatsScene extends Phaser.Scene {
             'bugBounty', 'bossRush', 'sprintSurvivor'
         ];
 
-        // Store selected mode
-        if (!this.selectedGameMode) {
-            this.selectedGameMode = 'gitSurvivor';
-        }
-
         // Title
         this.add.text(width / 2, y, '🏅 Local Leaderboards', {
             fontSize: '22px',
@@ -338,8 +340,7 @@ export default class StatsScene extends Phaser.Scene {
             }).setOrigin(0.5);
 
             btn.on('pointerdown', () => {
-                this.selectedGameMode = mode;
-                this.scene.restart();
+                this.scene.restart({ tab: this.currentTab, mode, returnScene: this.returnScene });
             });
 
             if (!isSelected) {
@@ -523,7 +524,7 @@ export default class StatsScene extends Phaser.Scene {
             padding: { x: 10, y: 5 }
         });
         backBtn.setInteractive({ useHandCursor: true });
-        backBtn.on('pointerdown', () => this.scene.start('SettingsScene'));
+        backBtn.on('pointerdown', () => this.scene.start(this.returnScene));
         backBtn.on('pointerover', () => backBtn.setStyle({ backgroundColor: '#555555' }));
         backBtn.on('pointerout', () => backBtn.setStyle({ backgroundColor: '#333333' }));
     }

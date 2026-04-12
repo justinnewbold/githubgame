@@ -12,6 +12,7 @@ import { shareManager } from '../utils/ShareManager.js';
 import { leaderboard } from '../utils/Leaderboard.js';
 import { screenReader } from '../utils/ScreenReader.js';
 import { logger } from '../utils/Logger.js';
+import { saveStateManager } from '../utils/SaveStateManager.js';
 
 export default class GitSurvivorScene extends BaseScene {
     constructor() {
@@ -25,7 +26,8 @@ export default class GitSurvivorScene extends BaseScene {
         });
     }
 
-    init() {
+    init(data = {}) {
+        this.pendingRestoreState = data.restoreState || null;
         // Game state
         this.playerHealth = 100;
         this.playerSanity = 100;
@@ -155,6 +157,8 @@ export default class GitSurvivorScene extends BaseScene {
                 gameData.save();
             });
         }
+
+        this.setupPersistence();
 
         // Humor messages
         this.humorMessages = [
@@ -685,6 +689,64 @@ export default class GitSurvivorScene extends BaseScene {
         }
     }
 
+
+    setupPersistence() {
+        saveStateManager.startAutoSave(this, 15000);
+
+        this.events.once('shutdown', () => {
+            saveStateManager.stopAutoSave();
+        });
+
+        if (this.pendingRestoreState) {
+            const restored = saveStateManager.restore(this, this.pendingRestoreState);
+            if (restored) {
+                this.updateHUD();
+                this.particles.floatingText(this.player.x, this.player.y - 50, 'Continue run loaded!', '#00ffcc');
+            }
+            this.pendingRestoreState = null;
+        }
+    }
+
+    captureState() {
+        return {
+            playerHealth: this.playerHealth,
+            playerSanity: this.playerSanity,
+            diskSpace: this.diskSpace,
+            level: this.level,
+            score: this.score,
+            enemiesKilled: this.enemiesKilled,
+            powerUpsCollected: this.powerUpsCollected,
+            bossActive: this.bossActive,
+            nextBossAt: this.nextBossAt,
+            lastLevelUpAt: this.lastLevelUpAt,
+            player: {
+                x: this.player?.x || 0,
+                y: this.player?.y || 0
+            }
+        };
+    }
+
+    restoreState(data) {
+        if (!data) {
+            return;
+        }
+
+        this.playerHealth = data.playerHealth ?? this.playerHealth;
+        this.playerSanity = data.playerSanity ?? this.playerSanity;
+        this.diskSpace = data.diskSpace ?? this.diskSpace;
+        this.level = data.level ?? this.level;
+        this.score = data.score ?? this.score;
+        this.enemiesKilled = data.enemiesKilled ?? this.enemiesKilled;
+        this.powerUpsCollected = data.powerUpsCollected ?? this.powerUpsCollected;
+        this.bossActive = false;
+        this.nextBossAt = data.nextBossAt ?? Math.max(30, Math.ceil((this.enemiesKilled + 1) / 10) * 10);
+        this.lastLevelUpAt = data.lastLevelUpAt ?? Math.floor(this.enemiesKilled / 10) * 10;
+
+        if (data.player && this.player) {
+            this.player.setPosition(data.player.x, data.player.y);
+        }
+    }
+
     gameOver() {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
@@ -694,6 +756,8 @@ export default class GitSurvivorScene extends BaseScene {
         gameData.updateStat('totalScore', this.score, 'increment');
 
         // Cleanup
+        saveStateManager.stopAutoSave();
+        saveStateManager.deleteSave('quick-save');
         this.powerUpManager.cleanup();
 
         // Check if score qualifies for leaderboard
